@@ -19,6 +19,11 @@ class ChatRooomController: UITableViewController, HandleSwitchDelegate {
     
     var delegate : changeChatTypeDelegate?
     
+    var isNewUser : Bool?
+    
+    var hasFriends : Bool?
+    var hasChatRooms : Bool?
+    
     var isChatRoom : Bool?
     var url : String?
     
@@ -56,14 +61,19 @@ class ChatRooomController: UITableViewController, HandleSwitchDelegate {
     
     override func viewDidLoad() {
         
+        DispatchQueue.main.async {
+            self.startupVerify()
+        }
         
-        retrieveFriends()
-        retrieveChatRooms()
+        
+        self.refreshControl?.addTarget(self, action: #selector(refresh), for: UIControl.Event.valueChanged)
+        
         tableView.register(UINib(nibName: "FriendsCell", bundle: nil), forCellReuseIdentifier: "customFriendsCell")
         setupNavBarItems()
         chatRoomMembers.append(uid!)
         
     }
+    
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return users.count
@@ -77,6 +87,7 @@ class ChatRooomController: UITableViewController, HandleSwitchDelegate {
         cell.delegate = self
         return cell
     }
+    
     
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -114,6 +125,100 @@ class ChatRooomController: UITableViewController, HandleSwitchDelegate {
         performSegue(withIdentifier: "createNewChatRoom", sender: self)
     }
     
+    func startupVerify() {
+        if Auth.auth().currentUser?.uid == nil {
+            print("user not logged in...")
+            navigationController?.popViewController(animated: true)
+            self.tableView.reloadData()
+        }
+        else {
+            DispatchQueue.main.async {
+                Database.database().reference().child("users").child(self.uid!).observeSingleEvent(of: .value, with: {
+                    (snapshot) in
+                    let snapshotValue = snapshot.value as! Dictionary<String, Any>
+                    if (snapshotValue["Friends"] == nil) && (snapshotValue["chatrooms"] == nil) {
+                        self.hasChatRooms = false
+                        self.hasFriends = false
+                        self.tableView.reloadData()
+                    }
+                    else if snapshotValue["Friends"] == nil {
+                        self.hasFriends = false
+                    }
+                    else if snapshotValue["chatrooms"] == nil {
+                        self.hasChatRooms = false
+                    }
+                    else {
+                        self.hasChatRooms = true
+                        self.hasFriends = true
+                    }
+                    
+                    print(self.hasChatRooms)
+                    print(self.hasFriends)
+                    
+                    print("ok 32")
+                    
+                    if self.hasChatRooms != false {
+                        self.retrieveChatRooms()
+                    }
+                    if self.hasFriends != false {
+                        self.retrieveFriends()
+                    }
+                })
+            }
+            
+            
+        }
+        
+    }
+    
+    @objc func refresh(sender:AnyObject)
+    {
+        // Updating your data here...
+        if Auth.auth().currentUser?.uid == nil {
+            print("user not logged in...")
+            navigationController?.popViewController(animated: true)
+            self.tableView.reloadData()
+        }
+        else {
+            DispatchQueue.main.async {
+                Database.database().reference().child("users").child(self.uid!).observeSingleEvent(of: .value, with: {
+                    (snapshot) in
+                    let snapshotValue = snapshot.value as! Dictionary<String, Any>
+                    print(snapshotValue)
+                    if snapshotValue["Friends"] == nil {
+                        self.hasFriends = false
+                    }
+                    if snapshotValue["chatrooms"] == nil {
+                        self.hasChatRooms = false
+                    }
+                    else {
+                        self.hasChatRooms = true
+                        self.hasFriends = true
+                    }
+                    
+                    print(self.hasChatRooms)
+                    print(self.hasFriends)
+                    
+                    print("ok 32")
+                    
+                    if self.hasChatRooms != false {
+                        self.retrieveChatRooms()
+                    }
+                    if self.hasFriends != false {
+                        self.retrieveFriends()
+                    }
+                })
+                
+            }
+            
+            
+        }
+        
+        
+        
+        
+        self.refreshControl?.endRefreshing()
+    }
     
     
     func setupNavBarItems() {

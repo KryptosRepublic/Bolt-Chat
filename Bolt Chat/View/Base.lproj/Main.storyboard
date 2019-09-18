@@ -102,6 +102,17 @@
                             <outlet property="delegate" destination="nJ5-0I-UdT" id="INg-ng-93R"/>
                         </connections>
                     </tableView>
+                    <refreshControl key="refreshControl" opaque="NO" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" id="gnJ-L9-rlE">
+                        <autoresizingMask key="autoresizingMask"/>
+                        <attributedString key="attributedTitle">
+                            <fragment content="Refreshing">
+                                <attributes>
+                                    <font key="NSFont" metaFont="smallSystem"/>
+                                    <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                </attributes>
+                            </fragment>
+                        </attributedString>
+                    </refreshControl>
                     <connections>
                         <segue destination="Dfe-bw-N0I" kind="show" identifier="goToUsers" id="eJ5-0A-Dyp"/>
                         <segue destination="Giu-Ke-e8C" kind="show" identifier="goToChatVC" id="8hZ-br-qAR"/>
@@ -313,7 +324,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="H7e-wi-OMt"/>
-        <segue reference="6nI-yZ-dTo"/>
+        <segue reference="8hZ-br-qAR"/>
+        <segue reference="nE9-le-1LF"/>
     </inferredMetricsTieBreakers>
 </document>

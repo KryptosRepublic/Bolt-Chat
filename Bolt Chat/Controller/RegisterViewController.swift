@@ -21,6 +21,14 @@ class RegisterViewController: UIViewController {
         
     }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "goToChat" {
+            let chatRoomVC = segue.destination as! ChatRooomController
+            chatRoomVC.hasFriends = false
+            chatRoomVC.hasChatRooms = false
+        }
+    }
+    
     @IBAction func registerButtonPressed(_ sender: Any) {
         Auth.auth().createUser(withEmail: emailTextField.text!, password: passwordTextField.text!, completion: {
             (result,error) in
