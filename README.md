@@ -1,8 +1,7 @@
 #### Installation
 
 # install the pods
-$ cd Bolt-Chat
-$ pod install
+$ cd Bolt-Chat && pod install
 
 !! open the xcworkspace instead of xcproject
 
